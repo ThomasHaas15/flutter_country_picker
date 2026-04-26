@@ -1,3 +1,9 @@
+## 1.0.0
+
+Stable release. No functional changes from 0.1.0; the API surface is
+considered stable and future breaking changes will require a major
+version bump.
+
 ## 0.1.0
 
 Initial release.
