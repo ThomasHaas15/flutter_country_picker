@@ -137,8 +137,9 @@ class _CountryPickerLocalizationsDelegate
   @override
   bool isSupported(Locale locale) {
     final lang = locale.languageCode.toLowerCase();
-    return CountryPickerLocalizations._supportedLocaleKeys
-        .any((key) => key.startsWith('${lang}_'));
+    return CountryPickerLocalizations._supportedLocaleKeys.any(
+      (key) => key.startsWith('${lang}_'),
+    );
   }
 
   @override

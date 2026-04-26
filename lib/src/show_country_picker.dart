@@ -87,8 +87,7 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
   }
 
   Future<void> _loadLocalizations() async {
-    final ctxLocale =
-        widget.locale ?? Localizations.maybeLocaleOf(context);
+    final ctxLocale = widget.locale ?? Localizations.maybeLocaleOf(context);
     final loc = await CountryPickerLocalizations.load(ctxLocale);
     if (!mounted) return;
     setState(() => _l10n = loc);
@@ -113,15 +112,21 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
       for (final code in kCountryCodes) {
         entries.add(_DisplayEntry(code: code, name: l10n.nameFor(code)));
       }
-      entries.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+      entries.sort(
+        (a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()),
+      );
     }
 
     final query = _query.trim().toLowerCase();
     final filtered = query.isEmpty
         ? entries
-        : entries.where((e) =>
-            e.name.toLowerCase().contains(query) ||
-            e.code.toLowerCase().contains(query)).toList();
+        : entries
+              .where(
+                (e) =>
+                    e.name.toLowerCase().contains(query) ||
+                    e.code.toLowerCase().contains(query),
+              )
+              .toList();
 
     final titleStyle = TextStyle(
       fontSize: 17,
@@ -185,8 +190,9 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
                               shape: widget.shape,
                               isSelected: isSelected,
                               theme: theme,
-                              onTap: () => Navigator.of(context)
-                                  .pop(Country(alpha2: entry.code)),
+                              onTap: () => Navigator.of(
+                                context,
+                              ).pop(Country(alpha2: entry.code)),
                             );
                           },
                         ),
@@ -361,8 +367,7 @@ class _CountryRow extends StatelessWidget {
                   name,
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight:
-                        isSelected ? FontWeight.w600 : FontWeight.w400,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                     color: isSelected
                         ? theme.selectedColor
                         : theme.onSurfaceColor,

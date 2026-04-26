@@ -73,7 +73,8 @@ class CountryPickerTheme {
       selectedColor: selectedColor ?? scheme.primary,
       onSurfaceColor: onSurfaceColor ?? scheme.onSurface,
       iconColor: iconColor ?? scheme.onSurface,
-      searchFieldFillColor: searchFieldFillColor ??
+      searchFieldFillColor:
+          searchFieldFillColor ??
           Color.alphaBlend(
             scheme.onSurface.withValues(alpha: 0.04),
             scheme.surface,
