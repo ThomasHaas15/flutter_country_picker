@@ -2,7 +2,6 @@
 /// and theme-aware styling. No network calls.
 library;
 
-export 'src/country.dart';
 export 'src/country_flag_shape.dart';
 export 'src/country_picker_localizations.dart';
 export 'src/country_picker_theme.dart';

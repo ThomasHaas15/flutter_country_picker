@@ -1,7 +1,7 @@
 {
   "@@locale": "nl_NL",
-  "_defaultTitle": "Land",
-  "_defaultSearchHint": "Zoek land…",
+  "defaultTitle": "Land",
+  "defaultSearchHint": "Zoek land…",
   "AF": "Afghanistan",
   "AL": "Albanië",
   "DZ": "Algerije",
