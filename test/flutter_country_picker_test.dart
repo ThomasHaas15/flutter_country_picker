@@ -54,4 +54,24 @@ void main() {
       expect(loc.localeKey, 'en_US');
     });
   });
+
+  group('countryNameFor', () {
+    testWidgets('returns English name when locale is omitted',
+        (tester) async {
+      expect(await countryNameFor('NL'), 'Netherlands');
+      expect(await countryNameFor('US'), 'United States');
+    });
+
+    testWidgets('returns localized name for supported locale',
+        (tester) async {
+      expect(
+        await countryNameFor('US', locale: const Locale('nl', 'NL')),
+        'Verenigde Staten',
+      );
+    });
+
+    testWidgets('falls back to code for unknown ISO code', (tester) async {
+      expect(await countryNameFor('ZZ'), 'ZZ');
+    });
+  });
 }

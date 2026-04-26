@@ -75,3 +75,19 @@ class CountryPickerLocalizations {
   /// All known ISO codes, in package-defined order.
   static List<String> get allCodes => kCountryCodes;
 }
+
+/// Returns the country name for the ISO alpha-2 [code] in the given [locale].
+///
+/// Pass `Localizations.localeOf(context)` (or `Localizations.maybeLocaleOf`)
+/// to follow the host app's locale; omit [locale] to get the English (en_US)
+/// name. Unsupported locales fall back to en_US, and unknown [code]s fall
+/// back to the code itself.
+///
+/// ```dart
+/// final name = await countryNameFor('NL', locale: const Locale('nl', 'NL'));
+/// // → 'Nederland'
+/// ```
+Future<String> countryNameFor(String code, {Locale? locale}) async {
+  final loc = await CountryPickerLocalizations.load(locale);
+  return loc.nameFor(code);
+}
