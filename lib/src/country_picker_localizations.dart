@@ -5,10 +5,27 @@ import 'package:flutter/widgets.dart';
 
 import 'data/countries.dart';
 
-/// In-memory translations for the picker, keyed by locale.
+/// Localized strings used by the country picker.
 ///
-/// Loaded once per locale from the bundled `assets/l10n/<locale>.arb` file.
-/// Country names fall back to the entry's English name when a key is missing.
+/// Register this in your app's `MaterialApp` to load translations once at
+/// startup and access them synchronously inside widgets:
+///
+/// ```dart
+/// MaterialApp(
+///   localizationsDelegates: const [
+///     CountryPickerLocalizations.delegate,
+///     GlobalMaterialLocalizations.delegate,
+///     GlobalWidgetsLocalizations.delegate,
+///     GlobalCupertinoLocalizations.delegate,
+///   ],
+///   supportedLocales: CountryPickerLocalizations.supportedLocales,
+/// )
+/// ```
+///
+/// When the delegate isn't registered, `showCountryPicker` falls back to
+/// loading translations on demand from the bundled
+/// `assets/l10n/<locale>.arb` files, and the [countryNameFor] helper
+/// remains available for non-widget callers.
 class CountryPickerLocalizations {
   final String localeKey;
   final String defaultTitle;
@@ -22,14 +39,50 @@ class CountryPickerLocalizations {
     required Map<String, String> names,
   }) : _names = names;
 
-  static const _supportedLocales = <String>{'en_US', 'nl_NL'};
+  static const _supportedLocaleKeys = <String>{'en_US', 'nl_NL'};
   static const _fallbackLocale = 'en_US';
   static const _packageName = 'flutter_country_picker';
 
+  /// Locales for which translations ship with this package.
+  ///
+  /// Use as the `supportedLocales` argument of `MaterialApp` if the picker
+  /// is the only thing driving locale selection in your app.
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en', 'US'),
+    Locale('nl', 'NL'),
+  ];
+
+  /// Delegate to register in `MaterialApp.localizationsDelegates`.
+  static const LocalizationsDelegate<CountryPickerLocalizations> delegate =
+      _CountryPickerLocalizationsDelegate();
+
+  /// Returns the registered [CountryPickerLocalizations] from [context],
+  /// or throws if the delegate isn't registered.
+  static CountryPickerLocalizations of(BuildContext context) {
+    final loc = maybeOf(context);
+    assert(
+      loc != null,
+      'No CountryPickerLocalizations found. Add '
+      'CountryPickerLocalizations.delegate to your MaterialApp\'s '
+      'localizationsDelegates.',
+    );
+    return loc!;
+  }
+
+  /// Returns the registered [CountryPickerLocalizations] from [context],
+  /// or `null` when the delegate isn't registered.
+  static CountryPickerLocalizations? maybeOf(BuildContext context) {
+    return Localizations.of<CountryPickerLocalizations>(
+      context,
+      CountryPickerLocalizations,
+    );
+  }
+
   static final Map<String, CountryPickerLocalizations> _cache = {};
 
-  /// Loads translations for [locale]. If the language is not supported,
-  /// falls back to English (en_US).
+  /// Loads translations for [locale]. Unsupported locales fall back to
+  /// English (en_US). Subsequent calls for the same resolved locale are
+  /// served from an in-memory cache.
   static Future<CountryPickerLocalizations> load(Locale? locale) async {
     final key = _resolveLocale(locale);
     final cached = _cache[key];
@@ -40,14 +93,14 @@ class CountryPickerLocalizations {
     final decoded = json.decode(raw) as Map<String, dynamic>;
     final names = <String, String>{};
     decoded.forEach((k, value) {
-      if (k.startsWith('@') || k.startsWith('_')) return;
-      if (value is String) names[k] = value;
+      if (value is! String) return;
+      if (k.length == 2 && k == k.toUpperCase()) names[k] = value;
     });
     final loc = CountryPickerLocalizations._(
       key,
-      defaultTitle: decoded['_defaultTitle'] as String? ?? 'Country',
+      defaultTitle: decoded['defaultTitle'] as String? ?? 'Country',
       defaultSearchHint:
-          decoded['_defaultSearchHint'] as String? ?? 'Search country…',
+          decoded['defaultSearchHint'] as String? ?? 'Search country…',
       names: names,
     );
     _cache[key] = loc;
@@ -64,9 +117,9 @@ class CountryPickerLocalizations {
     final country = locale.countryCode?.toUpperCase();
     if (country != null) {
       final exact = '${lang}_$country';
-      if (_supportedLocales.contains(exact)) return exact;
+      if (_supportedLocaleKeys.contains(exact)) return exact;
     }
-    for (final supported in _supportedLocales) {
+    for (final supported in _supportedLocaleKeys) {
       if (supported.startsWith('${lang}_')) return supported;
     }
     return _fallbackLocale;
@@ -76,18 +129,45 @@ class CountryPickerLocalizations {
   static List<String> get allCodes => kCountryCodes;
 }
 
-/// Returns the country name for the ISO alpha-2 [code] in the given [locale].
+class _CountryPickerLocalizationsDelegate
+    extends LocalizationsDelegate<CountryPickerLocalizations> {
+  const _CountryPickerLocalizationsDelegate();
+
+  @override
+  bool isSupported(Locale locale) {
+    final lang = locale.languageCode.toLowerCase();
+    return CountryPickerLocalizations._supportedLocaleKeys
+        .any((key) => key.startsWith('${lang}_'));
+  }
+
+  @override
+  Future<CountryPickerLocalizations> load(Locale locale) =>
+      CountryPickerLocalizations.load(locale);
+
+  @override
+  bool shouldReload(_CountryPickerLocalizationsDelegate old) => false;
+}
+
+/// Returns the country name for ISO alpha-2 [code] localized to [locale].
 ///
-/// Pass `Localizations.localeOf(context)` (or `Localizations.maybeLocaleOf`)
-/// to follow the host app's locale; omit [locale] to get the English (en_US)
-/// name. Unsupported locales fall back to en_US, and unknown [code]s fall
-/// back to the code itself.
+/// Async because it loads the bundled ARB on first access. Subsequent
+/// calls for the same locale are served from the in-memory cache.
+/// For widget code where you've registered
+/// [CountryPickerLocalizations.delegate], prefer [countryNameOf] which is
+/// synchronous.
 ///
-/// ```dart
-/// final name = await countryNameFor('NL', locale: const Locale('nl', 'NL'));
-/// // → 'Nederland'
-/// ```
+/// Unsupported [locale]s fall back to English (en_US); unknown [code]s
+/// fall back to the code itself.
 Future<String> countryNameFor(String code, {Locale? locale}) async {
   final loc = await CountryPickerLocalizations.load(locale);
   return loc.nameFor(code);
+}
+
+/// Synchronous lookup of the country name for ISO alpha-2 [code], using
+/// the [CountryPickerLocalizations] registered on [context].
+///
+/// Requires [CountryPickerLocalizations.delegate] to be present in your
+/// `MaterialApp.localizationsDelegates`. Throws in debug if it isn't.
+String countryNameOf(BuildContext context, String code) {
+  return CountryPickerLocalizations.of(context).nameFor(code);
 }

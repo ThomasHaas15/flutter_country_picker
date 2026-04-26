@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
 
-import 'country.dart';
 import 'country_flag_shape.dart';
 import 'country_picker_localizations.dart';
 import 'country_picker_theme.dart';
 import 'data/countries.dart';
 
-/// Opens a fullscreen country picker.
+/// Opens a fullscreen country picker and returns the chosen ISO alpha-2
+/// code, or `null` if dismissed.
 ///
-/// Returns the chosen [Country] (with `name` translated to the active locale),
-/// or `null` if dismissed.
+/// Use [countryNameFor] (async) or [countryNameOf] (sync, in widget code
+/// with the delegate registered) to translate the returned code for
+/// display.
 ///
 /// - [selectedCode]: ISO code currently selected, highlighted in the list.
 /// - [shape]: round (default) or rectangular flag images.
 /// - [theme]: visual overrides; any unset field falls back to [Theme.of].
-/// - [locale]: forces a specific locale (currently `en_US` and `nl_NL` are
-///   bundled). When omitted, uses [Localizations.localeOf] of the calling
-///   context, or English (en_US) if none is available.
-Future<Country?> showCountryPicker(
+/// - [locale]: forces a specific locale, ignoring the registered
+///   delegate. When omitted, uses
+///   [CountryPickerLocalizations.maybeOf] if available, otherwise loads
+///   on demand from [Localizations.maybeLocaleOf] of the calling context
+///   (English/en_US if no locale is available).
+Future<String?> showCountryPicker(
   BuildContext context, {
   String? selectedCode,
   CountryFlagShape shape = CountryFlagShape.round,
   CountryPickerTheme? theme,
   Locale? locale,
 }) {
-  return Navigator.of(context).push<Country>(
-    PageRouteBuilder<Country>(
+  return Navigator.of(context).push<String>(
+    PageRouteBuilder<String>(
       opaque: true,
       transitionDuration: const Duration(milliseconds: 300),
       reverseTransitionDuration: const Duration(milliseconds: 300),
@@ -69,14 +72,22 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
   CountryPickerLocalizations? _l10n;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_l10n != null) return;
+    if (widget.locale == null) {
+      final registered = CountryPickerLocalizations.maybeOf(context);
+      if (registered != null) {
+        _l10n = registered;
+        return;
+      }
+    }
     _loadLocalizations();
   }
 
   Future<void> _loadLocalizations() async {
-    final ctxLocale = widget.locale
-        ?? (mounted ? Localizations.maybeLocaleOf(context) : null);
+    final ctxLocale =
+        widget.locale ?? Localizations.maybeLocaleOf(context);
     final loc = await CountryPickerLocalizations.load(ctxLocale);
     if (!mounted) return;
     setState(() => _l10n = loc);
@@ -172,9 +183,8 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
                               shape: widget.shape,
                               isSelected: isSelected,
                               theme: theme,
-                              onTap: () => Navigator.of(context).pop(
-                                Country(code: entry.code, name: entry.name),
-                              ),
+                              onTap: () =>
+                                  Navigator.of(context).pop(entry.code),
                             );
                           },
                         ),

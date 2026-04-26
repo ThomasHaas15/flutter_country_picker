@@ -1,21 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:flutter_country_picker/flutter_country_picker.dart';
 
 void main() {
-  group('Country', () {
-    test('value equality on code + name', () {
-      const a = Country(code: 'NL', name: 'Netherlands');
-      const b = Country(code: 'NL', name: 'Netherlands');
-      const c = Country(code: 'NL', name: 'Nederland');
-      expect(a, equals(b));
-      expect(a, isNot(equals(c)));
-    });
-  });
-
   group('CountryPickerLocalizations', () {
-    testWidgets('exposes ISO codes from generated data', (tester) async {
+    testWidgets('exposes ISO codes from data file', (tester) async {
       expect(CountryPickerLocalizations.allCodes, contains('NL'));
       expect(CountryPickerLocalizations.allCodes, contains('US'));
       expect(CountryPickerLocalizations.allCodes, isNot(contains('EN')));
@@ -72,6 +63,42 @@ void main() {
 
     testWidgets('falls back to code for unknown ISO code', (tester) async {
       expect(await countryNameFor('ZZ'), 'ZZ');
+    });
+  });
+
+  group('LocalizationsDelegate', () {
+    testWidgets('delegate.isSupported recognizes en/nl, rejects fr',
+        (tester) async {
+      const delegate = CountryPickerLocalizations.delegate;
+      expect(delegate.isSupported(const Locale('en')), isTrue);
+      expect(delegate.isSupported(const Locale('en', 'US')), isTrue);
+      expect(delegate.isSupported(const Locale('nl', 'NL')), isTrue);
+      expect(delegate.isSupported(const Locale('fr')), isFalse);
+    });
+
+    testWidgets('of(context) returns loaded localizations and powers '
+        'countryNameOf', (tester) async {
+      String? captured;
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('nl', 'NL'),
+          supportedLocales: CountryPickerLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            CountryPickerLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: Builder(
+            builder: (context) {
+              captured = countryNameOf(context, 'US');
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(captured, 'Verenigde Staten');
     });
   });
 }

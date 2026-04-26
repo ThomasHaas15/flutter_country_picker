@@ -1,7 +1,7 @@
 {
   "@@locale": "en_US",
-  "_defaultTitle": "Country",
-  "_defaultSearchHint": "Search country…",
+  "defaultTitle": "Country",
+  "defaultSearchHint": "Search country…",
   "AF": "Afghanistan",
   "AL": "Albania",
   "DZ": "Algeria",

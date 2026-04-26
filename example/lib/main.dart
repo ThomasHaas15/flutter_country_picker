@@ -14,15 +14,16 @@ class _DemoApp extends StatefulWidget {
 }
 
 class _DemoAppState extends State<_DemoApp> {
-  Locale _locale = const Locale('en');
+  Locale _locale = const Locale('en', 'US');
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Country Picker Demo',
       locale: _locale,
-      supportedLocales: const [Locale('en'), Locale('nl')],
+      supportedLocales: CountryPickerLocalizations.supportedLocales,
       localizationsDelegates: const [
+        CountryPickerLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
@@ -51,20 +52,23 @@ class _DemoHome extends StatefulWidget {
 }
 
 class _DemoHomeState extends State<_DemoHome> {
-  Country? _selected;
+  String? _selectedCode;
   CountryFlagShape _shape = CountryFlagShape.round;
 
   Future<void> _open() async {
-    final result = await showCountryPicker(
+    final code = await showCountryPicker(
       context,
-      selectedCode: _selected?.code,
+      selectedCode: _selectedCode,
       shape: _shape,
     );
-    if (result != null) setState(() => _selected = result);
+    if (code != null) setState(() => _selectedCode = code);
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedName = _selectedCode == null
+        ? null
+        : countryNameOf(context, _selectedCode!);
     return Scaffold(
       appBar: AppBar(title: const Text('flutter_country_picker')),
       body: Center(
@@ -74,9 +78,9 @@ class _DemoHomeState extends State<_DemoHome> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                _selected == null
+                _selectedCode == null
                     ? 'No country selected'
-                    : '${_selected!.code} — ${_selected!.name}',
+                    : '$_selectedCode — $selectedName',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 24),
@@ -95,14 +99,19 @@ class _DemoHomeState extends State<_DemoHome> {
                 onSelectionChanged: (s) => setState(() => _shape = s.first),
               ),
               const SizedBox(height: 12),
-              SegmentedButton<String>(
+              SegmentedButton<Locale>(
                 segments: const [
-                  ButtonSegment(value: 'en', label: Text('English')),
-                  ButtonSegment(value: 'nl', label: Text('Nederlands')),
+                  ButtonSegment(
+                    value: Locale('en', 'US'),
+                    label: Text('English'),
+                  ),
+                  ButtonSegment(
+                    value: Locale('nl', 'NL'),
+                    label: Text('Nederlands'),
+                  ),
                 ],
-                selected: {widget.locale.languageCode},
-                onSelectionChanged: (s) =>
-                    widget.onLocaleChange(Locale(s.first)),
+                selected: {widget.locale},
+                onSelectionChanged: (s) => widget.onLocaleChange(s.first),
               ),
               const SizedBox(height: 24),
               FilledButton(
