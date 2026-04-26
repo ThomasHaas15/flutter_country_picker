@@ -88,7 +88,8 @@ class CountryPickerLocalizations {
     final cached = _cache[key];
     if (cached != null) return cached;
 
-    final assetPath = 'packages/$_packageName/assets/l10n/$key.arb';
+    final lang = key.split('_').first;
+    final assetPath = 'packages/$_packageName/assets/l10n/$lang.arb';
     final raw = await rootBundle.loadString(assetPath);
     final decoded = json.decode(raw) as Map<String, dynamic>;
     final names = <String, String>{};
