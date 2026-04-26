@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_country_picker/flutter_country_picker.dart';
+import 'package:local_country_picker/local_country_picker.dart';
 
 void main() {
   group('Country', () {
@@ -27,10 +27,10 @@ void main() {
       expect(CountryPickerLocalizations.allCodes, isNot(contains('EN')));
     });
 
-    testWidgets('loads English ARB and translates known codes',
-        (tester) async {
-      final loc =
-          await CountryPickerLocalizations.load(const Locale('en', 'US'));
+    testWidgets('loads English ARB and translates known codes', (tester) async {
+      final loc = await CountryPickerLocalizations.load(
+        const Locale('en', 'US'),
+      );
       expect(loc.localeKey, 'en_US');
       expect(loc.defaultTitle, 'Country');
       expect(loc.defaultSearchHint, 'Search country…');
@@ -39,8 +39,9 @@ void main() {
     });
 
     testWidgets('loads Dutch ARB', (tester) async {
-      final loc =
-          await CountryPickerLocalizations.load(const Locale('nl', 'NL'));
+      final loc = await CountryPickerLocalizations.load(
+        const Locale('nl', 'NL'),
+      );
       expect(loc.localeKey, 'nl_NL');
       expect(loc.defaultTitle, 'Land');
       expect(loc.defaultSearchHint, 'Zoek land…');
@@ -48,28 +49,26 @@ void main() {
       expect(loc.nameFor('US'), 'Verenigde Staten');
     });
 
-    testWidgets('resolves bare languageCode to a country variant',
-        (tester) async {
+    testWidgets('resolves bare languageCode to a country variant', (
+      tester,
+    ) async {
       final loc = await CountryPickerLocalizations.load(const Locale('nl'));
       expect(loc.localeKey, 'nl_NL');
     });
 
-    testWidgets('falls back to en_US for unsupported locales',
-        (tester) async {
+    testWidgets('falls back to en_US for unsupported locales', (tester) async {
       final loc = await CountryPickerLocalizations.load(const Locale('fr'));
       expect(loc.localeKey, 'en_US');
     });
   });
 
   group('countryNameFor', () {
-    testWidgets('returns English name when locale is omitted',
-        (tester) async {
+    testWidgets('returns English name when locale is omitted', (tester) async {
       expect(await countryNameFor('NL'), 'Netherlands');
       expect(await countryNameFor('US'), 'United States');
     });
 
-    testWidgets('returns localized name for supported locale',
-        (tester) async {
+    testWidgets('returns localized name for supported locale', (tester) async {
       expect(
         await countryNameFor('US', locale: const Locale('nl', 'NL')),
         'Verenigde Staten',
@@ -82,8 +81,9 @@ void main() {
   });
 
   group('LocalizationsDelegate', () {
-    testWidgets('delegate.isSupported recognizes en/nl, rejects fr',
-        (tester) async {
+    testWidgets('delegate.isSupported recognizes en/nl, rejects fr', (
+      tester,
+    ) async {
       const delegate = CountryPickerLocalizations.delegate;
       expect(delegate.isSupported(const Locale('en')), isTrue);
       expect(delegate.isSupported(const Locale('en', 'US')), isTrue);

@@ -54,13 +54,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_country_picker:
-    dependency: "direct main"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.1.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -119,6 +112,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  local_country_picker:
+    dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "0.1.0"
   matcher:
     dependency: transitive
     description:
