@@ -1,0 +1,25 @@
+/// All ISO 3166-1 alpha-2 codes the picker ships flag assets and translations
+/// for. Display names are looked up via the bundled `assets/l10n/*.arb` files.
+const List<String> kCountryCodes = <String>[
+  'AF', 'AL', 'DZ', 'AD', 'AO', 'AQ', 'AG', 'AR', 'AM', 'AW',
+  'AU', 'AT', 'AZ', 'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ',
+  'BJ', 'BM', 'BT', 'BO', 'BQ', 'BA', 'BW', 'BR', 'BN', 'BG',
+  'BF', 'BI', 'KH', 'CM', 'CA', 'CV', 'CF', 'TD', 'CL', 'CN',
+  'CO', 'KM', 'CG', 'CR', 'HR', 'CU', 'CW', 'CY', 'CZ', 'CD',
+  'DK', 'DJ', 'DM', 'DO', 'TL', 'EC', 'EG', 'SV', 'GQ', 'ER',
+  'EE', 'ET', 'FJ', 'FI', 'FR', 'GA', 'GM', 'GE', 'DE', 'GH',
+  'GI', 'GR', 'GL', 'GT', 'GN', 'GW', 'GY', 'HT', 'HN', 'HK',
+  'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IL', 'IT', 'CI',
+  'JM', 'JP', 'JO', 'KZ', 'KE', 'KI', 'KW', 'KG', 'LA', 'LV',
+  'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MK', 'MG', 'MW',
+  'MY', 'MV', 'ML', 'MT', 'MH', 'MR', 'MU', 'MX', 'FM', 'MD',
+  'MC', 'MN', 'ME', 'MA', 'MZ', 'MM', 'NA', 'NR', 'NP', 'NL',
+  'NZ', 'NI', 'NE', 'NG', 'KP', 'NO', 'OM', 'PK', 'PW', 'PA',
+  'PG', 'PY', 'PE', 'PH', 'PL', 'PT', 'PR', 'QA', 'RO', 'RU',
+  'RW', 'KN', 'LC', 'SX', 'VC', 'WS', 'SM', 'ST', 'SA', 'SN',
+  'RS', 'SC', 'SL', 'SG', 'SK', 'SI', 'SB', 'SO', 'ZA', 'KR',
+  'SS', 'ES', 'LK', 'SD', 'SR', 'SZ', 'SE', 'CH', 'SY', 'TW',
+  'TJ', 'TZ', 'TH', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM',
+  'TV', 'UG', 'UA', 'AE', 'GB', 'US', 'UY', 'UZ', 'VU', 'VA',
+  'VE', 'VN', 'YE', 'ZM', 'ZW',
+];
