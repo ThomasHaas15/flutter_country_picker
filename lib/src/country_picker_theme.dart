@@ -36,13 +36,12 @@ class CountryPickerTheme {
 
   /// Font family for all text in the picker.
   ///
-  /// `null` (default) inherits from the ambient theme. Pass `'SFProText'`
-  /// to use the SF Pro Text family bundled with this package.
+  /// `null` (default) inherits from the ambient theme. Pass a font family
+  /// name to use a specific font.
   final String? fontFamily;
 
-  /// Optional package the [fontFamily] lives in. Set to
-  /// `'flutter_country_picker'` together with `fontFamily: 'SFProText'`
-  /// to use this package's bundled SF Pro Text.
+  /// Optional package the [fontFamily] lives in, when [fontFamily] points
+  /// at a font that ships inside another Flutter package's assets.
   final String? fontFamilyPackage;
 
   /// Header title text. Defaults to the localized "Country".

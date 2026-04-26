@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_country_picker/flutter_country_picker.dart';
+import 'package:local_country_picker/local_country_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
@@ -20,6 +20,7 @@ class _DemoAppState extends State<_DemoApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Country Picker Demo',
+      debugShowCheckedModeBanner: false,
       locale: _locale,
       supportedLocales: CountryPickerLocalizations.supportedLocales,
       localizationsDelegates: const [
@@ -68,7 +69,7 @@ class _DemoHomeState extends State<_DemoHome> {
   Widget build(BuildContext context) {
     final selected = _selected;
     return Scaffold(
-      appBar: AppBar(title: const Text('flutter_country_picker')),
+      appBar: AppBar(title: const Text('local_country_picker')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24),

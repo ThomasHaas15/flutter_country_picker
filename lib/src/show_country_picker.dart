@@ -347,7 +347,7 @@ class _CountryRow extends StatelessWidget {
                 ),
                 child: Image.asset(
                   assetPath,
-                  package: 'flutter_country_picker',
+                  package: 'local_country_picker',
                   width: 24,
                   height: 24,
                   fit: BoxFit.cover,

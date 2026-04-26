@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_country_picker/flutter_country_picker.dart';
+import 'package:local_country_picker/local_country_picker.dart';
 
 void main() {
   group('Country', () {

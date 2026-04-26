@@ -41,7 +41,7 @@ class CountryPickerLocalizations {
 
   static const _supportedLocaleKeys = <String>{'en_US', 'nl_NL'};
   static const _fallbackLocale = 'en_US';
-  static const _packageName = 'flutter_country_picker';
+  static const _packageName = 'local_country_picker';
 
   /// Locales for which translations ship with this package.
   ///
