@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'country.dart';
 import 'country_flag_shape.dart';
@@ -129,8 +130,8 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
               .toList();
 
     final titleStyle = TextStyle(
-      fontSize: 17,
-      fontWeight: FontWeight.w600,
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
       color: theme.onSurfaceColor,
       fontFamily: theme.fontFamily,
       package: theme.fontFamilyPackage,
@@ -149,7 +150,7 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
               onBack: () => Navigator.of(context).pop(),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
               child: _SearchField(
                 controller: _searchController,
                 hint: theme.searchHint ?? _defaultSearchHint(),
@@ -227,21 +228,37 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 56,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: IconButton(
-              onPressed: onBack,
-              icon: Icon(Icons.arrow_back_ios_new, color: iconColor, size: 20),
-              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: SizedBox(
+        height: 40,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: GestureDetector(
+                onTap: onBack,
+                behavior: HitTestBehavior.opaque,
+                child: SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: SvgPicture.asset(
+                      'assets/icons/chevron_left.svg',
+                      package: 'local_country_picker',
+                      width: 20,
+                      height: 20,
+                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-          Text(title, style: titleStyle),
-        ],
+            Text(title, style: titleStyle),
+          ],
+        ),
       ),
     );
   }
@@ -271,48 +288,56 @@ class _SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = TextStyle(
-      fontSize: 15,
+      fontSize: 14,
       color: textColor,
       fontFamily: fontFamily,
       package: fontFamilyPackage,
     );
-    return TextField(
-      controller: controller,
-      onChanged: onChanged,
-      style: textStyle,
-      cursorColor: textColor,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: textStyle.copyWith(color: hintColor),
-        prefixIcon: Icon(Icons.search, color: hintColor, size: 20),
-        suffixIcon: ValueListenableBuilder<TextEditingValue>(
-          valueListenable: controller,
-          builder: (_, value, __) {
-            if (value.text.isEmpty) return const SizedBox.shrink();
-            return IconButton(
-              onPressed: () {
-                controller.clear();
-                onChanged('');
-              },
-              icon: Icon(Icons.clear, color: hintColor, size: 18),
-            );
-          },
-        ),
-        filled: true,
-        fillColor: fillColor,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide.none,
-        ),
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: fillColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: textColor.withValues(alpha: 0.1)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          Icon(Icons.search, size: 20, color: hintColor),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: controller,
+              onChanged: onChanged,
+              style: textStyle,
+              cursorColor: textColor,
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: textStyle.copyWith(color: hintColor),
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
+              ),
+            ),
+          ),
+          ValueListenableBuilder<TextEditingValue>(
+            valueListenable: controller,
+            builder: (_, value, __) {
+              if (value.text.isEmpty) return const SizedBox.shrink();
+              return GestureDetector(
+                onTap: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
+                  child: Icon(Icons.close, size: 18, color: hintColor),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }
