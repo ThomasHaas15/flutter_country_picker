@@ -52,23 +52,21 @@ class _DemoHome extends StatefulWidget {
 }
 
 class _DemoHomeState extends State<_DemoHome> {
-  String? _selectedCode;
+  Country? _selected;
   CountryFlagShape _shape = CountryFlagShape.round;
 
   Future<void> _open() async {
-    final code = await showCountryPicker(
+    final result = await showCountryPicker(
       context,
-      selectedCode: _selectedCode,
+      selected: _selected,
       shape: _shape,
     );
-    if (code != null) setState(() => _selectedCode = code);
+    if (result != null) setState(() => _selected = result);
   }
 
   @override
   Widget build(BuildContext context) {
-    final selectedName = _selectedCode == null
-        ? null
-        : countryNameOf(context, _selectedCode!);
+    final selected = _selected;
     return Scaffold(
       appBar: AppBar(title: const Text('flutter_country_picker')),
       body: Center(
@@ -78,9 +76,9 @@ class _DemoHomeState extends State<_DemoHome> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                _selectedCode == null
+                selected == null
                     ? 'No country selected'
-                    : '$_selectedCode — $selectedName',
+                    : '${selected.alpha2} — ${countryNameOf(context, selected.alpha2)}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 24),
