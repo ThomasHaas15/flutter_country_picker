@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'country.dart';
 import 'country_flag_shape.dart';
 import 'country_picker_localizations.dart';
 import 'country_picker_theme.dart';
 import 'data/countries.dart';
 
-/// Opens a fullscreen country picker and returns the chosen ISO alpha-2
-/// code, or `null` if dismissed.
+/// Opens a fullscreen country picker and returns the chosen [Country], or
+/// `null` if dismissed.
 ///
-/// Use [countryNameFor] (async) or [countryNameOf] (sync, in widget code
-/// with the delegate registered) to translate the returned code for
-/// display.
+/// The returned [Country] carries only the ISO alpha-2 code. Use
+/// [countryNameFor] (async) or [countryNameOf] (sync, in widget code with
+/// the delegate registered) to translate it for display.
 ///
-/// - [selectedCode]: ISO code currently selected, highlighted in the list.
+/// - [selected]: country currently selected, highlighted in the list.
 /// - [shape]: round (default) or rectangular flag images.
 /// - [theme]: visual overrides; any unset field falls back to [Theme.of].
 /// - [locale]: forces a specific locale, ignoring the registered
@@ -20,20 +21,20 @@ import 'data/countries.dart';
 ///   [CountryPickerLocalizations.maybeOf] if available, otherwise loads
 ///   on demand from [Localizations.maybeLocaleOf] of the calling context
 ///   (English/en_US if no locale is available).
-Future<String?> showCountryPicker(
+Future<Country?> showCountryPicker(
   BuildContext context, {
-  String? selectedCode,
+  Country? selected,
   CountryFlagShape shape = CountryFlagShape.round,
   CountryPickerTheme? theme,
   Locale? locale,
 }) {
-  return Navigator.of(context).push<String>(
-    PageRouteBuilder<String>(
+  return Navigator.of(context).push<Country>(
+    PageRouteBuilder<Country>(
       opaque: true,
       transitionDuration: const Duration(milliseconds: 300),
       reverseTransitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (_, __, ___) => _CountryPickerScreen(
-        selectedCode: selectedCode,
+        selected: selected,
         shape: shape,
         theme: theme ?? const CountryPickerTheme(),
         locale: locale,
@@ -51,13 +52,13 @@ Future<String?> showCountryPicker(
 
 class _CountryPickerScreen extends StatefulWidget {
   const _CountryPickerScreen({
-    required this.selectedCode,
+    required this.selected,
     required this.shape,
     required this.theme,
     required this.locale,
   });
 
-  final String? selectedCode;
+  final Country? selected;
   final CountryFlagShape shape;
   final CountryPickerTheme theme;
   final Locale? locale;
@@ -176,15 +177,16 @@ class _CountryPickerScreenState extends State<_CountryPickerScreen> {
                           itemCount: filtered.length,
                           itemBuilder: (context, index) {
                             final entry = filtered[index];
-                            final isSelected = entry.code == widget.selectedCode;
+                            final isSelected =
+                                entry.code == widget.selected?.alpha2;
                             return _CountryRow(
                               code: entry.code,
                               name: entry.name,
                               shape: widget.shape,
                               isSelected: isSelected,
                               theme: theme,
-                              onTap: () =>
-                                  Navigator.of(context).pop(entry.code),
+                              onTap: () => Navigator.of(context)
+                                  .pop(Country(alpha2: entry.code)),
                             );
                           },
                         ),

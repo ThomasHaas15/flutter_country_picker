@@ -5,6 +5,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_country_picker/flutter_country_picker.dart';
 
 void main() {
+  group('Country', () {
+    test('value equality on alpha2', () {
+      const a = Country(alpha2: 'NL');
+      const b = Country(alpha2: 'NL');
+      const c = Country(alpha2: 'BE');
+      expect(a, equals(b));
+      expect(a.hashCode, b.hashCode);
+      expect(a, isNot(equals(c)));
+    });
+
+    test('toString surfaces the code', () {
+      expect(const Country(alpha2: 'NL').toString(), 'Country(NL)');
+    });
+  });
+
   group('CountryPickerLocalizations', () {
     testWidgets('exposes ISO codes from data file', (tester) async {
       expect(CountryPickerLocalizations.allCodes, contains('NL'));
